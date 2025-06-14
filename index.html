@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APICore.ai - 一站式 AI 模型 API 集成平台</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0A0A0F;
+            --bg-card-color: #13131A;
+            --text-primary: #F5F5F7;
+            --text-secondary: #A1A1AA;
+            --accent-blue: #00A9FF;
+            --accent-glow: rgba(0, 169, 255, 0.3);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --promo-color: #E2B340;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        
+        html::-webkit-scrollbar {
+            display: none;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-secondary);
+            font-family: 'Poppins', 'Noto Sans SC', sans-serif;
+            overflow-x: hidden;
+            width: 100%;
+            background-image: radial-gradient(circle at 50% 0%, rgba(0, 169, 255, 0.1), transparent 30%);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        section {
+            padding: 160px 0;
+            position: relative;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            color: var(--text-primary);
+            text-align: center;
+            margin-bottom: 3rem;
+            font-weight: 700;
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            margin-bottom: 7rem;
+            max-width: 720px;
+            margin-left: auto;
+            margin-right: auto;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            font-weight: 400;
+        }
+
+        .hero {
+            height: 100vh;
+            min-height: 720px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            flex-direction: column;
+            padding: 0 20px;
+        }
+
+        .hero h1 {
+            font-size: 4.8rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #FFFFFF, #A1A1AA);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+            letter-spacing: -1.5px;
+        }
+
+        .hero .hero-subtitle {
+            font-size: 1.1rem;
+            max-width: 750px;
+            margin: 0 auto 1.5rem;
+            line-height: 1.7;
+            font-weight: 400;
+            white-space: nowrap;
+        }
+
+        .promo-text {
+            border: 1px solid var(--promo-color);
+            padding: 8px 16px;
+            border-radius: 8px;
+            color: var(--promo-color);
+            display: inline-block;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            background-color: rgba(226, 179, 64, 0.05);
+            box-shadow: 0 0 15px rgba(226, 179, 64, 0.1);
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-top: 3rem;
+        }
+
+        .btn {
+            padding: 16px 32px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+            cursor: pointer;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-blue);
+            color: #fff;
+            box-shadow: 0 10px 30px -10px var(--accent-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px -10px var(--accent-glow);
+        }
+        
+        .btn.btn-primary[disabled] {
+            cursor: not-allowed;
+            background-color: #A1A1AA;
+            box-shadow: none;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            border-color: var(--border-color);
+        }
+        
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .hero-metrics {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: center;
+            margin-top: 6rem;
+            width: 100%;
+            max-width: 900px;
+        }
+        
+        .metric-item {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0));
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            flex-grow: 1;
+            flex-basis: 200px;
+        }
+        
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.2;
+        }
+        
+        .metric-value .suffix {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-left: 0.25rem;
+        }
+        
+        .metric-label {
+            margin-top: 0.75rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .grid-layout {
+            display: grid;
+            gap: 3rem;
+        }
+
+        .grid-layout.grid-2 { grid-template-columns: repeat(2, 1fr); }
+        .grid-layout.grid-3 { grid-template-columns: repeat(3, 1fr); }
+        
+        .card {
+            background-color: var(--bg-card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2.5rem;
+            height: 100%;
+            transition: all 0.3s ease-out;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(0, 169, 255, 0.3);
+            box-shadow: 0 0 40px -10px var(--accent-glow), 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+        }
+
+        .card h3 {
+            color: var(--text-primary);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .card .icon {
+            font-size: 2rem;
+            color: var(--accent-blue);
+            margin-bottom: 1.5rem;
+            display: inline-block;
+        }
+        
+        .generator-input-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 4rem;
+        }
+
+        .generator-input {
+            background-color: var(--bg-card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            padding: 0 24px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 1rem;
+            width: 100%;
+            max-width: 400px;
+            height: 58px;
+            transition: border-color 0.3s ease;
+        }
+        .generator-input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+        }
+        
+        #use-case-results {
+            min-height: 200px;
+        }
+        
+        .loader {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #fff;
+            border-bottom-color: transparent;
+            border-radius: 50%;
+            display: inline-block;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+        }
+        
+        #models {
+            padding-bottom: 0;
+        }
+        .models-container {
+            background-color: var(--bg-card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 4rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .animated-ring {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            border-top-color: var(--accent-blue);
+            border-left-color: var(--accent-blue);
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: ring-spin 4s linear infinite;
+        }
+        
+        @keyframes ring-spin {
+            100% { transform: translateX(-50%) rotate(360deg); }
+        }
+
+        .models-container .section-title { margin-top: 3rem; }
+        .models-container .section-subtitle { margin-bottom: 3rem; }
+
+        .model-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 4rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 10px 24px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .tab-btn.active, .tab-btn:hover {
+            background-color: var(--text-primary);
+            color: var(--bg-color);
+            border-color: var(--text-primary);
+        }
+
+        .model-logos {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 3rem;
+            align-items: start;
+            min-height: 150px;
+            margin-bottom: 4rem;
+        }
+        
+        .model-logo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+        }
+        
+        .model-logo.hidden {
+            opacity: 0;
+            transform: scale(0.9);
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .model-logo img {
+            height: 48px;
+            width: 100%;
+            object-fit: contain;
+            filter: grayscale(1) contrast(0.5) brightness(1.2);
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+
+        .model-logo:hover img {
+            filter: none;
+            opacity: 1;
+        }
+        
+        .model-logo span { font-size: 0.9rem; font-weight: 500; }
+        
+        .recent-updates {
+            margin-top: 4rem;
+            padding-top: 4rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .recent-updates-title {
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 2rem;
+            font-size: 1.2rem;
+        }
+        
+        .update-pills {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 4rem;
+        }
+
+        .update-pill {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .update-pill::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--accent-blue);
+            box-shadow: 0 0 8px var(--accent-glow);
+        }
+
+        @keyframes rotation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .comparison-card {
+            background-color: var(--bg-card-color);
+            padding: 2.5rem;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .comparison-card h3 {
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+        
+        .comparison-card ul { list-style: none; }
+        
+        .comparison-card li {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .comparison-card li:last-child { border-bottom: none; }
+        .comparison-card li i { font-size: 1.2rem; }
+        .comparison-card.blue li i { color: var(--accent-blue); }
+        .comparison-card.red li i { color: #ef4444; }
+        
+        .faq-item {
+            border-bottom: 1px solid var(--border-color);
+        }
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+        
+        .faq-question {
+            padding: 2rem 0;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-primary);
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+        
+        .faq-question i {
+            transition: transform 0.3s ease;
+            color: var(--accent-blue);
+            font-size: 1.2rem;
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        .faq-answer p { padding-bottom: 2rem; line-height: 1.8; max-width: 90%; }
+        
+        .faq-item.active .faq-question i { transform: rotate(45deg); }
+        .faq-item.active .faq-answer { max-height: 300px; }
+        
+        footer { border-top: 1px solid var(--border-color); padding: 4rem 0; }
+        
+        .footer-content { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+        
+        .social-links a {
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            margin-left: 1.5rem;
+            transition: color 0.3s ease;
+        }
+        
+        .social-links a:hover { color: var(--accent-blue); }
+
+        .scroll-animate, .stagger-child {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 1.2s cubic-bezier(0.19, 1, 0.22, 1), transform 1.2s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .scroll-animate.visible, .stagger-child.visible { opacity: 1; transform: translateY(0); }
+
+        @media (max-width: 1024px) {
+            .grid-layout.grid-3, .grid-layout.grid-2 { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 3.5rem; }
+            section { padding: 120px 0; }
+        }
+
+        @media (max-width: 768px) {
+            section { padding: 80px 0; }
+            .hero h1 { font-size: 2.8rem; }
+            .hero p.hero-subtitle { white-space: normal; }
+            .cta-buttons { flex-direction: column; width: 80%; margin-left:auto; margin-right:auto; text-align: center; }
+            .section-title { font-size: 2.2rem; }
+            .footer-content { flex-direction: column; gap: 2rem; }
+            .social-links a:first-child { margin-left: 0; }
+        }
+        
+        @media (max-width: 480px) {
+            .container { padding: 0 16px; }
+            .hero h1 { font-size: 2.5rem; }
+            .card, .comparison-card, .models-container { padding: 2rem; }
+            .faq-question { font-size: 1rem; padding: 1.5rem 0;}
+            .generator-input-group { flex-direction: column; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <main>
+        <section class="hero">
+            <div class="scroll-animate">
+                <h1>一站式 AI 模型 API 集成平台</h1>
+                <p class="hero-subtitle">我们致力于打破技术壁垒，提供最便捷、最具成本效益的 AI 解决方案，让创新触手可及。</p>
+                <p class="promo-text">邀请码邀请好友注册终身获得3%返利</p>
+                <div class="cta-buttons">
+                    <a href="https://ismaque.org/login" target="_blank" rel="noopener noreferrer" class="btn btn-primary">开始使用</a>
+                    <a href="https://doc.apicore.ai/" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">查看文档</a>
+                </div>
+            </div>
+            <div class="hero-metrics stagger-container">
+                <div class="metric-item stagger-child">
+                    <div class="metric-value"><span data-target="99.9">0</span><span class="suffix">%</span></div>
+                    <p class="metric-label">服务可用性</p>
+                </div>
+                <div class="metric-item stagger-child">
+                    <div class="metric-value"><span data-target="300">0</span><span class="suffix">+</span></div>
+                    <p class="metric-label">AI 模型支持</p>
+                </div>
+                <div class="metric-item stagger-child">
+                    <div class="metric-value">24/7</div>
+                    <p class="metric-label">技术支持</p>
+                </div>
+                <div class="metric-item stagger-child">
+                    <div class="metric-value"><span class="suffix" style="margin-left: 0; margin-right: 0.25rem;">#</span><span data-target="1">0</span></div>
+                    <p class="metric-label">性价比</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="advantages" class="container">
+            <h2 class="section-title scroll-animate">我们的核心优势</h2>
+            <div class="grid-layout grid-2 stagger-container">
+                <div class="card stagger-child">
+                    <h3>全网模型聚合</h3>
+                    <p>一个 API 即可访问全网最新、最热门的 AI 模型，无需管理多个密钥和账户，简化开发流程。</p>
+                </div>
+                <div class="card stagger-child">
+                    <h3>极致性价比</h3>
+                    <p>专线连接，价格远低于官方定价，并提供多种灵活套餐，告别“门槛费”，享受极致性价比。</p>
+                </div>
+                <div class="card stagger-child">
+                    <h3>国内全覆盖</h3>
+                    <p>全面接入国内主流大模型，支持文心、通义、智谱等，在合规前提下提供更多本地化选择。</p>
+                </div>
+                <div class="card stagger-child">
+                    <h3>稳定可靠</h3>
+                    <p>企业级高可用架构，多节点冗余备份，确保您的服务 7x24 小时稳定运行，无后顾之忧。</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="container">
+            <h2 class="section-title scroll-animate">强大的 API 功能</h2>
+            <div class="grid-layout grid-3 stagger-container">
+                <div class="card stagger-child">
+                    <i class="icon ri-terminal-window-line"></i>
+                    <h3>文本生成与对话</h3>
+                    <p>支持 GPT-4、Claude、Gemini 等主流大模型，提供稳定的对话与生成服务，满足不同场景需求。</p>
+                </div>
+                <div class="card stagger-child">
+                    <i class="icon ri-image-line"></i>
+                    <h3>图像生成与处理</h3>
+                    <p>集成 DALL-E 3、Midjourney 等顶级绘画模型，支持文生图、图生图等多种创意功能。</p>
+                </div>
+                <div class="card stagger-child">
+                    <i class="icon ri-movie-line"></i>
+                    <h3>多媒体生成</h3>
+                    <p>提供视频生成、声音克隆与合成等功能，支持将文本或图像转化为高质量的视频和音频。</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="use-case-generator" class="container">
+            <h2 class="section-title scroll-animate">✨ 探索应用场景</h2>
+            <p class="section-subtitle scroll-animate">输入一个行业或想法，让 Gemini 为您生成创新的 API 应用场景，激发您的下一个伟大项目。</p>
+            <div class="generator-input-group scroll-animate">
+                <input type="text" id="use-case-prompt" class="generator-input" placeholder="例如：电商、教育、医疗...">
+                <button id="generate-use-case-btn" class="btn btn-primary">
+                    <span class="btn-text">生成灵感</span>
+                    <span class="btn-loader" style="display: none;"><span class="loader"></span></span>
+                </button>
+            </div>
+            <div id="use-case-results" class="grid-layout grid-3 stagger-container">
+            </div>
+        </section>
+
+        <section id="models" class="container">
+            <div class="models-container scroll-animate">
+                <div class="animated-ring"></div>
+                <h2 class="section-title">持续接入最新的 AI 模型</h2>
+                <p class="section-subtitle">文字/图片/语音/视频/RAG，应有尽有</p>
+                
+                <div class="model-tabs">
+                    <button class="tab-btn active" data-category="text">语言模型</button>
+                    <button class="tab-btn" data-category="image">图像生成</button>
+                    <button class="tab-btn" data-category="video">视频生成</button>
+                    <button class="tab-btn" data-category="audio">声音处理</button>
+                    <button class="tab-btn" data-category="music">音乐模型</button>
+                </div>
+        
+                <div class="model-logos stagger-container">
+                    <!-- Text Models -->
+                    <div class="model-logo stagger-child" data-category="text"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/ChatGPT_logo.svg/1024px-ChatGPT_logo.svg.png" alt="ChatGPT"><span>ChatGPT</span></div>
+                    <div class="model-logo stagger-child" data-category="text"><img src="https://pbs.twimg.com/profile_images/1725548396345655296/2g9Jt6tY_400x400.jpg" alt="Claude"><span>Claude</span></div>
+                    <div class="model-logo stagger-child" data-category="text"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Google-Gemini-logo.svg/1920px-Google-Gemini-logo.svg.png" alt="Gemini"><span>Gemini</span></div>
+                    <div class="model-logo stagger-child" data-category="text"><img src="https://pbs.twimg.com/profile_images/1727503891899125760/31t6cbKd_400x400.jpg" alt="Grok"><span>Grok</span></div>
+                    <div class="model-logo stagger-child" data-category="text"><img src="https://static.wixstatic.com/media/23117c_c7847c1303ce4172a3922d46e32d3f66~mv2.png/v1/fill/w_442,h_442,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/deepseek-logo-white-square.png" alt="DeepSeek"><span>DeepSeek</span></div>
+                    <div class="model-logo stagger-child" data-category="text"><img src="https://lf-flow-cdn-tos.byteintl.com/obj/flow-le-com/doubao/web/logo/logo-mid.png" alt="豆包"><span>豆包</span></div>
+                    <div class="model-logo stagger-child" data-category="text"><img src="https://img.alicdn.com/imgextra/i4/O1CN01f0gT5t1s5z7A5m5f0_!!6000000005719-2-tps-1024-1024.png" alt="Qwen"><span>通义千问</span></div>
+
+                    <!-- Image Models -->
+                    <div class="model-logo stagger-child" data-category="image"><img src="https://images.squarespace-cdn.com/content/v1/646387a323335f687332d665/4198150f-e6e2-41a4-9134-a21356230f2c/Flux_logo_white.png" alt="Flux"><span>Flux</span></div>
+                    <div class="model-logo stagger-child" data-category="image"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/DALL-E_logo.svg/1200px-DALL-E_logo.svg.png" alt="DALL-E"><span>DALL-E</span></div>
+                    <div class="model-logo stagger-child" data-category="image"><img src="https://pbs.twimg.com/profile_images/1798343169094778880/Pqj8K4F__400x400.jpg" alt="Kling"><span>Kling</span></div>
+                    <div class="model-logo stagger-child" data-category="image"><img src="https://img.alicdn.com/imgextra/i4/O1CN01f0gT5t1s5z7A5m5f0_!!6000000005719-2-tps-1024-1024.png" alt="Qwen"><span>Qwen-VL</span></div>
+                    <div class="model-logo stagger-child" data-category="image"><img src="https://images.squarespace-cdn.com/content/v1/5b320b9e31d4df1c3a63684d/ce5f2122-92e1-432d-a25b-a19f20e85c13/Midjourney_Emblem_V1-4.png" alt="Midjourney"><span>Midjourney</span></div>
+                
+                    <!-- Video Models -->
+                    <div class="model-logo stagger-child" data-category="video"><img src="https://pbs.twimg.com/profile_images/1798343169094778880/Pqj8K4F__400x400.jpg" alt="Kling"><span>Kling</span></div>
+                    <div class="model-logo stagger-child" data-category="video"><img src="https://storage.googleapis.com/pika-web-production-public-v1/pika-logo/pika-logo-icon-monochrome.svg" alt="Pika"><span>Pika</span></div>
+                    <div class="model-logo stagger-child" data-category="video"><img src="https://images.runwayml.com/static/images/logo-symbol-dark.svg" alt="Runway"><span>Runway</span></div>
+                    <div class="model-logo stagger-child" data-category="video"><img src="https://www.jimeng.qq.com/static/logo-392ac5f9.png" alt="即梦AI"><span>即梦AI</span></div>
+                    <div class="model-logo stagger-child" data-category="video"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_Veo_logo.svg/2560px-Google_Veo_logo.svg.png" alt="Veo"><span>Veo</span></div>
+                    <div class="model-logo stagger-child" data-category="video"><img src="https://i.getweb.app/library/154/1715011746.png" alt="PixVerse"><span>PixVerse</span></div>
+                    
+                    <!-- Music Models -->
+                    <div class="model-logo stagger-child" data-category="music"><img src="https://app.suno.ai/static/images/logo-black-white.png" alt="Suno"><span>Suno</span></div>
+                    
+                    <!-- Audio Models -->
+                    <div class="model-logo stagger-child" data-category="audio"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/OpenAI_Logo.svg/1200px-OpenAI_Logo.svg.png" alt="TTS"><span>TTS</span></div>
+                </div>
+        
+                <div class="recent-updates">
+                    <h3 class="recent-updates-title">接入模型 300+</h3>
+                    <div class="update-pills">
+                        <span class="update-pill">gpt-4o-2024-05-13</span>
+                        <span class="update-pill">deepseek-v2</span>
+                        <span class="update-pill">claude-3.5-sonnet</span>
+                        <span class="update-pill">gemini-1.5-flash</span>
+                    </div>
+                </div>
+                
+                <div class="view-more-container" style="margin-top: 3rem;">
+                    <a href="https://ismaque.org/login" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">查看更多模型</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="why-us" class="container">
+            <h2 class="section-title scroll-animate">为什么选择我们?</h2>
+            <div class="grid-layout grid-2 stagger-container">
+                <div class="comparison-card stagger-child blue">
+                    <h3>相比国外 API</h3>
+                    <ul>
+                        <li><i class="ri-checkbox-circle-fill"></i> 无需管理多个账户和密钥</li>
+                        <li><i class="ri-checkbox-circle-fill"></i> 无需注册绑定海外信用卡</li>
+                        <li><i class="ri-checkbox-circle-fill"></i> 账号额度永不过期</li>
+                        <li><i class="ri-checkbox-circle-fill"></i> 无惧网络与合规风险</li>
+                        <li><i class="ri-checkbox-circle-fill"></i> 实时查询每条请求明细</li>
+                    </ul>
+                </div>
+                <div class="comparison-card stagger-child red">
+                    <h3>官方渠道</h3>
+                    <ul>
+                        <li><i class="ri-close-circle-fill"></i> 接口繁多，协议不统一</li>
+                        <li><i class="ri-close-circle-fill"></i> 需要科学上网和国外手机号</li>
+                        <li><i class="ri-close-circle-fill"></i> 预付费门槛高，计费复杂</li>
+                        <li><i class="ri-close-circle-fill"></i> 随时可能因地区限制被封号</li>
+                        <li><i class="ri-close-circle-fill"></i> 技术支持响应慢，沟通成本高</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="faq" class="container">
+            <h2 class="section-title scroll-animate">常见问题</h2>
+            <div class="faq-list scroll-animate">
+                <div class="faq-item">
+                    <div class="faq-question"><span>什么是 APICore.ai？它如何工作？</span><i class="ri-add-line"></i></div>
+                    <div class="faq-answer"><p>APICore.ai 是一个 AI 模型 API 聚合平台。我们通过统一的接口，让您可以访问来自全球各地的多种 AI 模型，如 OpenAI、Google、Anthropic 等，您只需一个 API 密钥即可使用所有这些模型。</p></div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question"><span>APICore.ai 是否提供免费试用额度？</span><i class="ri-add-line"></i></div>
+                    <div class="faq-answer"><p>是的，新注册用户会获得一定的免费试用额度，让您可以体验平台的核心功能。您可以在后台查看您的剩余额度。</p></div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question"><span>APICore.ai 的定价模型是什么？</span><i class="ri-add-line"></i></div>
+                    <div class="faq-answer"><p>我们采用按量计费的定价模型，您只需为实际使用的量付费。我们也提供不同级别的模型套餐，价格更具竞争力。详情请参考我们的定价页面。</p></div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question"><span>如何将 APICore.ai 的 API 集成到我的项目中？</span><i class="ri-add-line"></i></div>
+                    <div class="faq-answer"><p>集成非常简单。我们提供了与 OpenAI 官方兼容的 API 接口，您只需将请求地址和 API 密钥替换为我们在平台提供给您的即可。我们还提供了详细的 API 文档和代码示例。</p></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="container">
+        <div class="footer-content">
+            <p>&copy; 2025 APICore.ai All rights reserved.</p>
+            <div class="social-links">
+                <a href="#" aria-label="GitHub"><i class="ri-github-fill"></i></a>
+                <a href="#" aria-label="Twitter"><i class="ri-twitter-x-line"></i></a>
+                <a href="#" aria-label="Telegram"><i class="ri-telegram-fill"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // FAQ Accordion
+            const faqItems = document.querySelectorAll('.faq-item');
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                question.addEventListener('click', () => {
+                    const wasActive = item.classList.contains('active');
+                    faqItems.forEach(i => i.classList.remove('active'));
+                    if (!wasActive) {
+                        item.classList.add('active');
+                    }
+                });
+            });
+
+            // Count-up Animation Function
+            function animateCountUp(el) {
+                const target = +el.dataset.target;
+                if (el.hasAnimated || isNaN(target)) return;
+                
+                el.hasAnimated = true; // Mark as animated
+                let current = 0;
+                const duration = 2000; // 2 seconds
+                
+                const step = (timestamp) => {
+                    if (!start) start = timestamp;
+                    const progress = Math.min((timestamp - start) / duration, 1);
+                    const easedProgress = 1 - Math.pow(1 - progress, 3); // Ease-out cubic
+                    
+                    let currentValue = easedProgress * target;
+
+                    if (target.toString().includes('.')) {
+                        el.innerText = currentValue.toFixed(1);
+                    } else {
+                        el.innerText = Math.ceil(currentValue);
+                    }
+
+                    if (progress < 1) {
+                        requestAnimationFrame(step);
+                    } else {
+                        el.innerText = target;
+                    }
+                };
+                let start;
+                requestAnimationFrame(step);
+            }
+
+            // Scroll Animations
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        
+                        // Staggered animation for child elements
+                        if (entry.target.classList.contains('stagger-container')) {
+                            const children = entry.target.querySelectorAll('.stagger-child');
+                            children.forEach((child, index) => {
+                                const delay = child.dataset.staggerDelay || 150;
+                                setTimeout(() => {
+                                    child.classList.add('visible');
+                                }, index * delay);
+                            });
+                        }
+                        
+                        // Specific for hero metrics count-up
+                        if (entry.target.classList.contains('hero-metrics') || entry.target.closest('.hero-metrics')) {
+                             const countUpElements = entry.target.querySelectorAll('[data-target]');
+                             countUpElements.forEach(animateCountUp);
+                        }
+
+
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.2
+            });
+
+            document.querySelectorAll('.scroll-animate, .stagger-container').forEach((el) => {
+                observer.observe(el);
+            });
+            
+            // --- Gemini API: Use Case Generator ---
+            const generateUseCaseBtn = document.getElementById('generate-use-case-btn');
+            const useCasePromptInput = document.getElementById('use-case-prompt');
+            const useCaseResultsContainer = document.getElementById('use-case-results');
+            
+            const iconMap = {
+                "chat": "ri-message-3-line", "image": "ri-image-line",
+                "data": "ri-database-2-line", "video": "ri-film-line",
+                "audio": "ri-customer-service-2-line", "analytics": "ri-bar-chart-2-line",
+                "default": "ri-lightbulb-flash-line"
+            };
+
+            generateUseCaseBtn.addEventListener('click', async () => {
+                const prompt = useCasePromptInput.value.trim();
+                if (!prompt) return;
+
+                const btn = generateUseCaseBtn;
+                const btnText = btn.querySelector('.btn-text');
+                const btnLoader = btn.querySelector('.btn-loader');
+                
+                btnText.style.display = 'none';
+                btnLoader.style.display = 'inline-block';
+                btn.disabled = true;
+                useCaseResultsContainer.innerHTML = '';
+
+                try {
+                    const apiKey = ""; 
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                    const system_prompt = `You are an expert in AI product innovation. Based on the user's keyword, generate exactly 3 creative and practical use case ideas for an AI API. For each idea, provide a short title, a one-sentence description, and suggest a relevant icon category from the following options: "chat", "image", "data", "video", "audio", "analytics", "default".`;
+
+                    const payload = {
+                        "contents": [{ "role": "user", "parts": [{ "text": `Keyword: "${prompt}"` }] }],
+                        "systemInstruction": { "parts": [{ "text": system_prompt }] },
+                        "generationConfig": {
+                            "responseMimeType": "application/json",
+                            "responseSchema": {
+                                "type": "ARRAY", "items": {
+                                    "type": "OBJECT", "properties": {
+                                        "title": { "type": "STRING" },
+                                        "description": { "type": "STRING" },
+                                        "icon": { "type": "STRING", "enum": ["chat", "image", "data", "video", "audio", "analytics", "default"] }
+                                    }, "required": ["title", "description", "icon"]
+                                }
+                            }
+                        }
+                    };
+
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) throw new Error(`API Error: ${response.status}`);
+
+                    const result = await response.json();
+                    
+                    if (result.candidates && result.candidates.length > 0) {
+                        const jsonString = result.candidates[0].content.parts[0].text;
+                        const ideas = JSON.parse(jsonString);
+                        
+                        ideas.forEach((idea, index) => {
+                            const card = document.createElement('div');
+                            card.className = 'card stagger-child';
+                            const iconClass = iconMap[idea.icon] || iconMap['default'];
+                            
+                            card.innerHTML = `<i class="icon ${iconClass}"></i><h3>${idea.title}</h3><p>${idea.description}</p>`;
+                            useCaseResultsContainer.appendChild(card);
+                            
+                            setTimeout(() => card.classList.add('visible'), 50 * (index + 1));
+                        });
+                    } else {
+                       useCaseResultsContainer.innerHTML = `<p>抱歉，未能生成有效的应用场景。请尝试更换关键词。</p>`;
+                    }
+                } catch (error) {
+                    console.error('Use Case Generator Error:', error);
+                    useCaseResultsContainer.innerHTML = `<p>生成时发生错误，请稍后再试。</p>`;
+                } finally {
+                    btnText.style.display = 'inline-block';
+                    btnLoader.style.display = 'none';
+                    btn.disabled = false;
+                }
+            });
+
+            // Model Tabs Logic
+            const modelTabs = document.querySelectorAll('.model-tabs .tab-btn');
+            const modelLogos = document.querySelectorAll('.model-logos .model-logo');
+            
+            function filterModels(category) {
+                modelLogos.forEach(logo => {
+                    logo.classList.add('hidden');
+                });
+
+                setTimeout(() => {
+                    modelLogos.forEach(logo => {
+                        const logoCategory = logo.dataset.category;
+                        if (category === logoCategory) {
+                           logo.classList.remove('hidden');
+                        }
+                    });
+
+                    const visibleLogos = document.querySelectorAll('.model-logos .model-logo:not(.hidden)');
+                    visibleLogos.forEach((child, index) => {
+                        child.classList.remove('visible');
+                        const delay = 100;
+                        setTimeout(() => {
+                            child.classList.add('visible');
+                        }, index * delay);
+                    });
+                }, 300);
+            }
+
+            modelTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    modelTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    const activeCategory = tab.dataset.category;
+                    filterModels(activeCategory);
+                });
+            });
+            
+            // Initial filter
+            filterModels('text');
+        });
+    </script>
+</body>
+</html>
